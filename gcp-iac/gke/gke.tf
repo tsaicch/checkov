@@ -2,20 +2,18 @@ terraform {
 }
 
 provider "google" {
-  project     = "mgmt-service-project-358707"
-  region      = "asia-east1"
-  credentials = file("~/Downloads/mgmt-host-project-358707-739cf0cf4afe.json")
+  project     = "playground-s-11-fc7b74db"
+  region      = "us-central1"
 }
 
 provider "google-beta" {
-  project     = "mgmt-service-project-358707"
-  region      = "asia-east1"
-  credentials = file("~/Downloads/mgmt-host-project-358707-739cf0cf4afe.json")
+  project     = "playground-s-11-fc7b74db"
+  region      = "us-central1"
 }
 
 locals {
-  host_project_id      = "mgmt-host-project-358707"
-  service_project_id   = "mgmt-service-project-358707"
+  host_project_id      = "playground-s-11-fc7b74db"
+  service_project_id   = "playground-s-11-fc7b74db"
   shared_vpc_name      = "shared-workspace"
   shared_vpc_self_link = "https://www.googleapis.com/compute/v1/projects/${local.host_project_id}/global/networks/${local.shared_vpc_name}"
 }
@@ -25,8 +23,8 @@ module "gke" {
   source                     = "terraform-google-modules/kubernetes-engine/google//modules/private-cluster"
   project_id                 = local.service_project_id
   name                       = "workspace-primary-gke"
-  region                     = "asia-east1"
-  zones                      = ["asia-east1-b"]
+  region                     = "us-central1"
+  zones                      = ["us-central1-b"]
   network_project_id         = local.host_project_id
   network                    = local.shared_vpc_name
   subnetwork                 = "gcp-mgmt-sub-primary-gke"
@@ -47,7 +45,7 @@ module "gke" {
     {
       name               = "primary-webservice"
       machine_type       = "n1-highcpu-16"
-      node_locations     = "asia-east1-b"
+      node_locations     = "us-central1-b"
       # min_count          = 2
       # max_count          = 3
       min_count          = 1
@@ -61,7 +59,7 @@ module "gke" {
       enable_gvnic       = false
       auto_repair        = true
       auto_upgrade       = true
-      service_account    = "primary-gke-sa@mgmt-service-project-358707.iam.gserviceaccount.com"
+      service_account    = "primary-gke-sa@playground-s-11-fc7b74db.iam.gserviceaccount.com"
       preemptible        = false
       # initial_node_count = 2
       initial_node_count = 1
@@ -70,7 +68,7 @@ module "gke" {
     {
       name               = "primary-sidekiq"
       machine_type       = "n1-standard-4"
-      node_locations     = "asia-east1-b"
+      node_locations     = "us-central1-b"
       # min_count          = 3
       # max_count          = 4
       min_count          = 1
@@ -84,7 +82,7 @@ module "gke" {
       enable_gvnic       = false
       auto_repair        = true
       auto_upgrade       = true
-      service_account    = "primary-gke-sa@mgmt-service-project-358707.iam.gserviceaccount.com"
+      service_account    = "primary-gke-sa@playground-s-11-fc7b74db.iam.gserviceaccount.com"
       preemptible        = false
       # initial_node_count = 3
       initial_node_count = 1
@@ -93,7 +91,7 @@ module "gke" {
     {
       name               = "primary-others"
       machine_type       = "n1-standard-4"
-      node_locations     = "asia-east1-b"
+      node_locations     = "us-central1-b"
       # min_count          = 1
       # max_count          = 2
       min_count          = 1
@@ -107,7 +105,7 @@ module "gke" {
       enable_gvnic       = false
       auto_repair        = true
       auto_upgrade       = true
-      service_account    = "primary-gke-sa@mgmt-service-project-358707.iam.gserviceaccount.com"
+      service_account    = "primary-gke-sa@playground-s-11-fc7b74db.iam.gserviceaccount.com"
       preemptible        = false
       # initial_node_count = 1
       initial_node_count = 1
@@ -116,7 +114,7 @@ module "gke" {
     {
       name               = "kasm"
       machine_type       = "n1-standard-4"
-      node_locations     = "asia-east1-b"
+      node_locations     = "us-central1-b"
       # min_count          = 1
       # max_count          = 2
       min_count          = 1
@@ -130,7 +128,7 @@ module "gke" {
       enable_gvnic       = false
       auto_repair        = true
       auto_upgrade       = true
-      service_account    = "primary-gke-sa@mgmt-service-project-358707.iam.gserviceaccount.com"
+      service_account    = "primary-gke-sa@playground-s-11-fc7b74db.iam.gserviceaccount.com"
       preemptible        = false
       # initial_node_count = 1
       initial_node_count = 1
@@ -139,7 +137,7 @@ module "gke" {
     {
       name               = "gitlab-runner"
       machine_type       = "n1-standard-4"
-      node_locations     = "asia-east1-b"
+      node_locations     = "us-central1-b"
       # min_count          = 1
       # max_count          = 2
       min_count          = 1
@@ -153,7 +151,7 @@ module "gke" {
       enable_gvnic       = false
       auto_repair        = true
       auto_upgrade       = true
-      service_account    = "primary-gke-sa@mgmt-service-project-358707.iam.gserviceaccount.com"
+      service_account    = "primary-gke-sa@playground-s-11-fc7b74db.iam.gserviceaccount.com"
       preemptible        = false
       # initial_node_count = 1
       initial_node_count = 1
