@@ -2,7 +2,7 @@ terraform {
 }
 
 locals {
-  project     = "playground-s-11-76b201f6"
+  project     = "playground-s-11-96a01031"
   region      = "us-central1"
 }
 
@@ -20,6 +20,7 @@ locals {
   host_project_id      = local.project
   service_project_id   = local.project
   shared_vpc_name      = "gke-vpc"
+  regional_kms         = "projects/playground-s-11-96a01031/locations/us-central1/keyRings/global-key-ring/cryptoKeys/regional-key"
 }
 
 # Create Sa for gke node
@@ -55,6 +56,11 @@ module "gke" {
   enable_shielded_nodes      = true
   master_ipv4_cidr_block     = "10.100.0.0/28"
   master_authorized_networks = [{ cidr_block = "10.10.0.0/24", display_name = "gcp-mgmt-sub-mig" }]
+
+  database_encryption {
+    state = "ENCRYPTED"
+    key_name = local.regional_kms
+  }
 
   node_pools = [
     {
