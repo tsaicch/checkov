@@ -1,0 +1,43 @@
+terraform {
+}
+
+provider "google" {
+  project     = "mgmt-host-project-358707"
+  region      = "asia-east1"
+}
+
+provider "google-beta" {
+  project     = "mgmt-host-project-358707"
+  region      = "asia-east1"
+}
+
+resource "google_compute_network" "vpc_network" {
+  name = "gke-vpc"
+}
+
+module "vpc" {
+  source  = "terraform-google-modules/network/google//modules/subnets"
+  project_id = "playground-s-11-5d1f84e2"
+  network_name = "gke-vpc"
+
+  subnets = [
+    {
+       subnet_name = "subnet-01"
+       subnet_ip = "10.10.10.0/24"
+       subnet_region = "us-central1"
+    },
+  ]
+
+  secondary_ranges = {
+    subnet-01 = [
+      {
+        range_name = "pod-cidr"
+        ip_cidr_range = "192.168.64.0/24"
+      },
+      {
+        range_name = "svc-cidr"
+        ip_cidr_range = "192.168.64.0/24"
+      },
+    ]
+  }
+}
