@@ -2,7 +2,7 @@ terraform {
 }
 
 locals {
-  project     = "playground-s-11-96a01031"
+  project     = "playground-s-11-5df34e0c"
   region      = "us-central1"
 }
 
@@ -20,7 +20,7 @@ locals {
   host_project_id      = local.project
   service_project_id   = local.project
   shared_vpc_name      = "gke-vpc"
-  regional_kms         = "projects/playground-s-11-96a01031/locations/us-central1/keyRings/global-key-ring/cryptoKeys/regional-key"
+  regional_kms         = "projects/playground-s-11-5df34e0c/locations/us-central1/keyRings/global-key-ring/cryptoKeys/regional-key"
 }
 
 # Create Sa for gke node
@@ -59,7 +59,7 @@ module "gke" {
 
   database_encryption=[{
     state = "ENCRYPTED"
-    key_name = "projects/playground-s-11-96a01031/locations/us-central1/keyRings/global-key-ring/cryptoKeys/regional-key"
+    key_name = local.regional_kms
   }]
 
   node_pools = [

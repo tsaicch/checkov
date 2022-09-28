@@ -1,8 +1,13 @@
+locals {
+  project     = "playground-s-11-96a01031"
+  region      = "us-central1"
+}
+
 module "enabled_google_apis" {
   source  = "terraform-google-modules/project-factory/google//modules/project_services"
   version = "~> 11.3"
 
-  project_id                  = var.project_id
+  project_id                  = local.project
   disable_services_on_destroy = false
 
   activate_apis = [
