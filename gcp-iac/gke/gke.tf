@@ -57,10 +57,10 @@ module "gke" {
   master_ipv4_cidr_block     = "10.100.0.0/28"
   master_authorized_networks = [{ cidr_block = "10.10.0.0/24", display_name = "gcp-mgmt-sub-mig" }]
 
-  database_encryption {
+  database_encryption=[{
     state = "ENCRYPTED"
     key_name = "projects/playground-s-11-96a01031/locations/us-central1/keyRings/global-key-ring/cryptoKeys/regional-key"
-  }
+  }]
 
   node_pools = [
     {
