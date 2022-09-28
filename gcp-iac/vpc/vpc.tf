@@ -2,7 +2,7 @@ terraform {
 }
 
 locals {
-  project     = "playground-s-11-76b201f6"
+  project     = "playground-s-11-96a01031"
   region      = "us-central1"
 }
 

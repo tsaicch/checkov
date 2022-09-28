@@ -59,7 +59,7 @@ module "gke" {
 
   database_encryption {
     state = "ENCRYPTED"
-    key_name = local.regional_kms
+    key_name = "projects/playground-s-11-96a01031/locations/us-central1/keyRings/global-key-ring/cryptoKeys/regional-key"
   }
 
   node_pools = [
