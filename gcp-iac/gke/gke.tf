@@ -1,21 +1,36 @@
 terraform {
 }
 
-provider "google" {
-  project     = "playground-s-11-fc7b74db"
+locals {
+  project     = "playground-s-11-76b201f6"
   region      = "us-central1"
+}
+
+provider "google" {
+  project     = local.project
+  region      = local.region
 }
 
 provider "google-beta" {
-  project     = "playground-s-11-fc7b74db"
-  region      = "us-central1"
+  project     = local.project
+  region      = local.region
 }
 
 locals {
-  host_project_id      = "playground-s-11-fc7b74db"
-  service_project_id   = "playground-s-11-fc7b74db"
-  shared_vpc_name      = "shared-workspace"
-  shared_vpc_self_link = "https://www.googleapis.com/compute/v1/projects/${local.host_project_id}/global/networks/${local.shared_vpc_name}"
+  host_project_id      = local.project
+  service_project_id   = local.project
+  shared_vpc_name      = "gke-vpc"
+}
+
+# Create Sa for gke node
+
+resource "google_service_account" "gke_service_account" {
+  account_id   = "primary-gke-sa"
+  display_name = "primary-gke-sa"
+}
+
+data "google_service_account" "gke_service_account" {
+  account_id = "primary-gke-sa"
 }
 
 # Create GKE for GitLab
@@ -23,7 +38,7 @@ module "gke" {
   source                     = "terraform-google-modules/kubernetes-engine/google//modules/private-cluster"
   project_id                 = local.service_project_id
   name                       = "workspace-primary-gke"
-  region                     = "us-central1"
+  region                     = local.region
   zones                      = ["us-central1-b"]
   network_project_id         = local.host_project_id
   network                    = local.shared_vpc_name
@@ -59,7 +74,7 @@ module "gke" {
       enable_gvnic       = false
       auto_repair        = true
       auto_upgrade       = true
-      service_account    = "primary-gke-sa@playground-s-11-fc7b74db.iam.gserviceaccount.com"
+      service_account    = data.google_service_account.gke_service_account.email
       preemptible        = false
       # initial_node_count = 2
       initial_node_count = 1
@@ -82,7 +97,7 @@ module "gke" {
       enable_gvnic       = false
       auto_repair        = true
       auto_upgrade       = true
-      service_account    = "primary-gke-sa@playground-s-11-fc7b74db.iam.gserviceaccount.com"
+      service_account    = data.google_service_account.gke_service_account.email
       preemptible        = false
       # initial_node_count = 3
       initial_node_count = 1
@@ -105,7 +120,7 @@ module "gke" {
       enable_gvnic       = false
       auto_repair        = true
       auto_upgrade       = true
-      service_account    = "primary-gke-sa@playground-s-11-fc7b74db.iam.gserviceaccount.com"
+      service_account    = data.google_service_account.gke_service_account.email
       preemptible        = false
       # initial_node_count = 1
       initial_node_count = 1
@@ -128,7 +143,7 @@ module "gke" {
       enable_gvnic       = false
       auto_repair        = true
       auto_upgrade       = true
-      service_account    = "primary-gke-sa@playground-s-11-fc7b74db.iam.gserviceaccount.com"
+      service_account    = data.google_service_account.gke_service_account.email
       preemptible        = false
       # initial_node_count = 1
       initial_node_count = 1
@@ -151,11 +166,20 @@ module "gke" {
       enable_gvnic       = false
       auto_repair        = true
       auto_upgrade       = true
-      service_account    = "primary-gke-sa@playground-s-11-fc7b74db.iam.gserviceaccount.com"
+      service_account    = data.google_service_account.gke_service_account.email
       preemptible        = false
       # initial_node_count = 1
       initial_node_count = 1
       enable_secure_boot = true
     }
   ]
+
+  node_pools_tags = {
+    all = [
+      "all-node-example",
+    ]
+    pool-01 = [
+      "pool-01-example",
+    ]
+  }
 }

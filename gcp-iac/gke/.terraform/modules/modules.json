@@ -1,1 +1,1 @@
-{"Modules":[{"Key":"gke","Source":"registry.terraform.io/terraform-google-modules/kubernetes-engine/google//modules/private-cluster","Version":"23.1.0","Dir":".terraform/modules/gke/modules/private-cluster"},{"Key":"","Source":"","Dir":"."}]}
+{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"gke","Source":"registry.terraform.io/terraform-google-modules/kubernetes-engine/google//modules/private-cluster","Version":"23.1.0","Dir":".terraform/modules/gke/modules/private-cluster"}]}

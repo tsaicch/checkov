@@ -1,14 +1,19 @@
 terraform {
 }
 
-provider "google" {
-  project     = "playground-s-11-5d1f84e2"
+locals {
+  project     = "playground-s-11-76b201f6"
   region      = "us-central1"
 }
 
+provider "google" {
+  project     = local.project
+  region      = local.region
+}
+
 provider "google-beta" {
-  project     = "playground-s-11-5d1f84e2"
-  region      = "us-central1"
+  project     = local.project
+  region      = local.region
 }
 
 resource "google_compute_network" "vpc_network" {
@@ -18,7 +23,7 @@ resource "google_compute_network" "vpc_network" {
 resource "google_compute_subnetwork" "gcp-mgmt-sub-primary-gke" {
   name = "gcp-mgmt-sub-primary-gke"
   ip_cidr_range = "10.2.0.0/16"
-  region = "us-central1"
+  region = local.region
   network = google_compute_network.vpc_network.name
   secondary_ip_range { 
     range_name = "pod-cidr" 
