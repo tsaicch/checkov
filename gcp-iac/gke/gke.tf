@@ -2,8 +2,9 @@ terraform {
 }
 
 locals {
-  project     = "playground-s-11-5df34e0c"
+  project     = "playground-s-11-fc0246ab"
   region      = "us-central1"
+  regional_kms         = "projects/playground-s-11-5df34e0c/locations/us-central1/keyRings/regional-key-ring/cryptoKeys/regional-key"
 }
 
 provider "google" {
@@ -20,7 +21,7 @@ locals {
   host_project_id      = local.project
   service_project_id   = local.project
   shared_vpc_name      = "gke-vpc"
-  regional_kms         = "projects/playground-s-11-5df34e0c/locations/us-central1/keyRings/global-key-ring/cryptoKeys/regional-key"
+
 }
 
 # Create Sa for gke node
@@ -35,7 +36,7 @@ data "google_service_account" "gke_service_account" {
 }
 
 # Create GKE for GitLab
-module "gke" {
+module "private-cluster" {
   source                     = "terraform-google-modules/kubernetes-engine/google//modules/private-cluster"
   project_id                 = local.service_project_id
   name                       = "workspace-primary-gke"
@@ -65,7 +66,8 @@ module "gke" {
   node_pools = [
     {
       name               = "primary-webservice"
-      machine_type       = "n1-highcpu-16"
+      machine_type       = "n1-standard-1"
+      #machine_type       = "n1-highcpu-16"
       node_locations     = "us-central1-b"
       # min_count          = 2
       # max_count          = 3
@@ -88,7 +90,8 @@ module "gke" {
     },
     {
       name               = "primary-sidekiq"
-      machine_type       = "n1-standard-4"
+      machine_type       = "n1-standard-1"
+      #machine_type       = "n1-standard-4"
       node_locations     = "us-central1-b"
       # min_count          = 3
       # max_count          = 4
@@ -111,7 +114,8 @@ module "gke" {
     },
     {
       name               = "primary-others"
-      machine_type       = "n1-standard-4"
+      machine_type       = "n1-standard-1"
+      #machine_type       = "n1-standard-4"
       node_locations     = "us-central1-b"
       # min_count          = 1
       # max_count          = 2
@@ -134,7 +138,8 @@ module "gke" {
     },
     {
       name               = "kasm"
-      machine_type       = "n1-standard-4"
+      machine_type       = "n1-standard-1"
+      #machine_type       = "n1-standard-4"
       node_locations     = "us-central1-b"
       # min_count          = 1
       # max_count          = 2
@@ -157,7 +162,8 @@ module "gke" {
     },
     {
       name               = "gitlab-runner"
-      machine_type       = "n1-standard-4"
+      machine_type       = "n1-standard-1"
+      #machine_type       = "n1-standard-4"
       node_locations     = "us-central1-b"
       # min_count          = 1
       # max_count          = 2
